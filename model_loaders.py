@@ -4,29 +4,18 @@ from transformers import AutoConfig, LlamaTokenizer, GPT2Tokenizer, PreTrainedTo
 from modeling_gpt2_with_pcw import GPT2LMHeadPCW
 from pcw_wrapper import PCWModelWrapper
 from modeling_llama_with_pcw import LlamaForCausalLMPCW
+from transformers import AutoTokenizer
 
 GPT2_WINDOW_SIZE = 1024
 LLAMA_WINDOW_SIZE = 2048
 
 
 def validate_model_name(model_name: str) -> None:
-    assert 'llama' in model_name or 'gpt2' in model_name, f"Unknown model: {model_name}"
+    assert 'gpt2' in model_name or model_name == 'TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T'
 
 
 def load_tokenizer(model_name: str) -> PreTrainedTokenizerBase:
-    if 'llama' in model_name:
-        if model_name == 'seanmor5/tiny-llama-test' or 'decapoda-research' in model_name:  # debug mode:
-            tokenizer = LlamaTokenizer.from_pretrained("decapoda-research/llama-7b-hf")
-            # In case you load those models, we must override an incorrect config:
-            # see: https://huggingface.co/decapoda-research/llama-7b-hf/discussions/12
-            tokenizer.bos_token_id = 1
-            tokenizer.eos_token_id = 2
-        else:
-            tokenizer = LlamaTokenizer.from_pretrained(model_name)
-    else:
-        # In our experiments we have added bos token to gpt2:
-        tokenizer = GPT2Tokenizer.from_pretrained('gpt2', add_bos_token=True)
-    return tokenizer
+    return AutoTokenizer.from_pretrained(model_name)
 
 
 def load_pcw_wrapper(model_name: str, cache_dir: str = None,

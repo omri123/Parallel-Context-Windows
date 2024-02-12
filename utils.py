@@ -7,7 +7,7 @@ import pandas as pd
 from matplotlib import pyplot as plt
 from numpy import typing as npt
 from torch import distributed as dist
-from transformers import PreTrainedTokenizerBase, LlamaTokenizer
+from transformers import PreTrainedTokenizerBase, LlamaTokenizer, LlamaTokenizerFast
 
 from constants import TEXT_BETWEEN_SHOTS, N_TOKENS, PROMPTS
 
@@ -84,7 +84,7 @@ def encode_labels(tokenizer: PreTrainedTokenizerBase, labels: List[str]) -> List
 
 def encode_stop_seq(tokenizer: PreTrainedTokenizerBase, stop_seq: str) -> int:
     stop_seq_token_id = tokenizer.encode(stop_seq, add_special_tokens=False)
-    if isinstance(tokenizer, LlamaTokenizer):
+    if isinstance(tokenizer, LlamaTokenizer) or isinstance(tokenizer, LlamaTokenizerFast):
         assert len(stop_seq_token_id) == 2
     else:
         assert len(stop_seq_token_id) == 1

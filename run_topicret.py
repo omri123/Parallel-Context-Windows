@@ -58,3 +58,5 @@ output = wrapper.pcw_generate(contexts=windows,
                               max_new_tokens=100)
 print('actual result is:')
 print(output)
+
+print("next steps: probably \n  1. document choosing using topk for better coherency, and\n  2. dependent windows.")

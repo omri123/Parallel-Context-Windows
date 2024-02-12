@@ -1,0 +1,21 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "run_evaluation",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "run_evaluation.py",
+            "console": "integratedTerminal",
+            "args": [
+                "--dataset", "sst2",
+                "--model", "TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T",
+                "--subsample-test-set", "100",
+                "--n-windows", "10"
+            ]
+        }
+    ]
+}

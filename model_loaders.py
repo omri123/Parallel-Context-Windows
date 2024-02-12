@@ -11,7 +11,8 @@ LLAMA_WINDOW_SIZE = 2048
 
 
 def validate_model_name(model_name: str) -> None:
-    assert 'gpt2' in model_name or model_name == 'TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T'
+    assert 'gpt2' in model_name or model_name == 'TinyLlama/TinyLlama-1.1B-intermediate-step-1431k-3T' \
+            or model_name == 'TinyLlama/TinyLlama-1.1B-Chat-v1.0'
 
 
 def load_tokenizer(model_name: str) -> PreTrainedTokenizerBase:

@@ -16,6 +16,13 @@
                 "--subsample-test-set", "100",
                 "--n-windows", "10"
             ]
+        },
+        {
+            "name": "TopicRet",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "run_topicret.py",
+            "console": "integratedTerminal",
         }
     ]
 }

@@ -1,10 +1,12 @@
-import numpy as np
 import json
 import re
+import os
+import argparse
+from tqdm import tqdm
+
 from model_loaders import load_pcw_wrapper
 from logits_processor import RestrictiveTokensLogitsProcessor
 
-wrapper = load_pcw_wrapper('TinyLlama/TinyLlama-1.1B-Chat-v1.0', n_windows=2)
 
 def split_windows(txt):
     mark = "talk about the next topic."
@@ -42,21 +44,38 @@ def get_samples(): # return a list of windows and a list of topics
             windows, topics = split_windows(txt)
             yield {'windows': windows, 'topics': topics}
 
-sample = get_samples().__next__()
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--just-one', action='store_true', help='infer the first and print')
+    parser.add_argument('--out', type=str, help='path to put results for evaluation')
+    parser.add_argument('--temp', type=float, help='sampling temperature, default to zero')
+    args = parser.parse_args()
+    
+    wrapper = load_pcw_wrapper('TinyLlama/TinyLlama-1.1B-Chat-v1.0')
+    outputs = []
+    for sample in tqdm(get_samples()):
+        windows = sample['windows']
+        topics = sample['topics']
+        task_text= '<|user|>\nWhat topics did we just discussed?</s>'
+        do_sample = args.temp == 0
+        # original instruction: '<|user|>\nWhat is the first topic we discussed? Only give me the topic name. Do not summarize yourself.</s>'
+        output = wrapper.pcw_generate(contexts=windows,
+                                    task_text=task_text,
+                                    temperature=args.temp,
+                                    do_sample=do_sample,
+                                    max_new_tokens=100)
+        outputs.append(output)
+        if args.just_one:
+            print(f"topics were:{os.linesep} {os.linesep.join(topics)}\n")
+            print(f'model output is {output}')
+            return
+        
+        with open(args.out, 'w+') as f:
+            for result in outputs:
+                f.write(result)
 
-for topic in sample['topics']:
-    print(topic)
-
-windows = sample['windows']
-task_text= '<|user|>\nWhat topics did we just discussed?</s>'
-# original instruction: '<|user|>\nWhat is the first topic we discussed? Only give me the topic name. Do not summarize yourself.</s>'
-
-output = wrapper.pcw_generate(contexts=windows,
-                              task_text=task_text,
-                              temperature=1,
-                              do_sample=True,
-                              max_new_tokens=100)
-print('actual result is:')
-print(output)
+if __name__ == '__main__':
+    main()
 
 print("next steps: probably \n  1. document choosing using topk for better coherency, and\n  2. dependent windows.")
+print("Idea: maybe just RAG above contextualized documents?")

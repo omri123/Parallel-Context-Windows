@@ -1,5 +1,12 @@
 # Parallel Context Windows (PCW)
 
+## Omri Notes
+
+This repo was ill-forked from AI21 repo, and updated to work with llama2.
+The goal is to test different variations of PCW (with topk etc) on long-text problems.
+
+## Original readme from here
+
 This repo contains the code for reproducing the classification experiments from [AI21 Labs](https://www.ai21.com/)' paper [Parallel Context Windows for Large Language Models
 ](https://arxiv.org/abs/2212.10947).  
 The code was tested with python 3.10, for CPU, GPU and multiple GPU runs. Currently, the code supports using GPT2 and LLaMa model families.
